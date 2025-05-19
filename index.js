@@ -17,9 +17,14 @@ app.get("/", (req, res) => {
     message: "Successfully",
   });
 });
-
+// User
 app.post("/api/v1/register/user", UserController.createUser);
+app.get("/api/v1/getAll/user", UserController.getAllUser);
+
+// Device
 app.post("/api/v2/register/device", DeviceController.addDevice);
+app.get("/api/v2/getAll/device", DeviceController.getAllDevice);
+app.post("/api/v2/add/device/list", DeviceController.addDeviceToList);
 
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`listening on http://localhost:${PORT}`);
