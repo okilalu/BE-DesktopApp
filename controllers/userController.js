@@ -13,4 +13,13 @@ const createUser = async (req, res) => {
     data,
   });
 };
-module.exports = { createUser };
+const getAllUser = async (req, res) => {
+  const { status, status_code, message, data } = await UserServices.listUser();
+  res.status(status_code).send({
+    status,
+    status_code,
+    message,
+    data,
+  });
+};
+module.exports = { createUser, getAllUser };

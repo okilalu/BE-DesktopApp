@@ -66,5 +66,25 @@ class UserServices {
     try {
     } catch (error) {}
   }
+  static async listUser() {
+    try {
+      const getAllUser = await UserRepositories.listUser();
+      if (getAllUser) {
+        return {
+          status: true,
+          status_code: 201,
+          message: "Succesfully get all user",
+          data: { user: getAllUser },
+        };
+      }
+    } catch (error) {
+      return {
+        status: false,
+        status_code: 500,
+        message: error,
+        data: { user: null },
+      };
+    }
+  }
 }
 module.exports = UserServices;
