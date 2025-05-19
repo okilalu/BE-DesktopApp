@@ -74,6 +74,30 @@ class DeviceServices {
       };
     }
   }
+  static async updateDevice() {
+    try {
+    } catch (error) {}
+  }
+  static async getAllDevice() {
+    try {
+      const getAllDevice = await DeviceRepositories.getAllDevice();
+      if (getAllDevice) {
+        return {
+          status: true,
+          status_code: 201,
+          message: "Succesfully get all device",
+          data: { user: getAllDevice },
+        };
+      }
+    } catch (error) {
+      return {
+        status: false,
+        status_code: 500,
+        message: error,
+        data: { device: null },
+      };
+    }
+  }
   static async addDeviceTolist({ samId }) {
     try {
       if (!samId) {
@@ -95,7 +119,14 @@ class DeviceServices {
           data: { device: addDeviceToList },
         };
       }
-    } catch (error) {}
+    } catch (error) {
+      return {
+        status: false,
+        status_code: 500,
+        message: error,
+        data: { device: null },
+      };
+    }
   }
 }
 module.exports = DeviceServices;
