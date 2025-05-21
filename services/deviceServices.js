@@ -74,9 +74,88 @@ class DeviceServices {
       };
     }
   }
-  static async updateDevice() {
+  static async updateDevice({
+    id,
+    deviceId,
+    samId,
+    deviceIP,
+    deviceUsername,
+    deviceRootFolder,
+    cameraIP,
+    cameraUsername,
+    cameraPassword,
+    cameraRootFolder,
+    cameraType,
+    location,
+  }) {
     try {
-    } catch (error) {}
+      const getDevice = await DeviceRepositories.findOneDevice({ id });
+      if (!getDevice) {
+        return {
+          status: false,
+          status_code: 401,
+          message: "Can't find device",
+          data: { device: null },
+        };
+      }
+      const updateDevice = await DeviceRepositories.updateDevice({
+        id,
+        deviceId,
+        samId,
+        deviceIP,
+        deviceUsername,
+        deviceRootFolder,
+        cameraIP,
+        cameraUsername,
+        cameraPassword,
+        cameraRootFolder,
+        cameraType,
+        location,
+      });
+      return {
+        status: true,
+        status_code: 200,
+        message: "Succesfully updated device",
+        data: { device: updateDevice },
+      };
+    } catch (error) {
+      console.log(error);
+      return {
+        status: false,
+        status_code: 500,
+        message: error,
+        data: { device: null },
+      };
+    }
+  }
+  static async deleteDevice({ id }) {
+    try {
+      const getDevice = await DeviceRepositories.findOneDevice({ id });
+      console.log("getDevice", getDevice);
+      if (!getDevice) {
+        return {
+          status: false,
+          status_code: 401,
+          message: "Can't find device to delete",
+          data: { device: null },
+        };
+      }
+      const deletedDevice = await DeviceRepositories.deleteDevice({ id });
+      return {
+        status: true,
+        status_code: 200,
+        message: "Successfully deleted device",
+        data: { device: deletedDevice },
+      };
+    } catch (error) {
+      console.log(error);
+      return {
+        status: false,
+        status_code: 500,
+        message: error,
+        data: { device: null },
+      };
+    }
   }
   static async getAllDevice() {
     try {

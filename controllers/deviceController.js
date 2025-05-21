@@ -34,6 +34,52 @@ const addDevice = async (req, res) => {
     data,
   });
 };
+const updateDevice = async (req, res) => {
+  const { id } = req.params;
+  const {
+    samId,
+    deviceIP,
+    deviceUsername,
+    deviceRootFolder,
+    cameraIP,
+    cameraUsername,
+    cameraPassword,
+    cameraRootFolder,
+    cameraType,
+    location,
+  } = req.body;
+  const { status, status_code, message, data } =
+    await DeviceServices.updateDevice({
+      id,
+      samId,
+      deviceIP,
+      deviceUsername,
+      deviceRootFolder,
+      cameraIP,
+      cameraUsername,
+      cameraPassword,
+      cameraRootFolder,
+      cameraType,
+      location,
+    });
+  res.status(status_code).send({
+    status,
+    status_code,
+    message,
+    data,
+  });
+};
+const deletedDevice = async (req, res) => {
+  const { id } = req.params;
+  const { status, status_code, message, data } =
+    await DeviceServices.deleteDevice({ id });
+  res.status(status_code).send({
+    status,
+    status_code,
+    message,
+    data,
+  });
+};
 const getAllDevice = async (req, res) => {
   const { status, status_code, message, data } =
     await DeviceServices.getAllDevice();
@@ -56,4 +102,10 @@ const addDeviceToList = async (req, res) => {
     data,
   });
 };
-module.exports = { addDevice, getAllDevice, addDeviceToList };
+module.exports = {
+  addDevice,
+  updateDevice,
+  deletedDevice,
+  getAllDevice,
+  addDeviceToList,
+};
