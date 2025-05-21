@@ -62,9 +62,107 @@ class UserServices {
       };
     }
   }
-  static async login({}) {
+  static async login({ username, password }) {
     try {
-    } catch (error) {}
+      const getUser = await UserRepositories.existingUsername({ username });
+      if (!getUser) {
+        return {
+          status: false,
+          status_code: 401,
+          message: "Can't find user",
+          data: { user: null },
+        };
+      }
+      const isPasswordCorrect = bcrypt.compareSync(password, getUser.password);
+      if (!isPasswordCorrect) {
+        return {
+          status: false,
+          status_code: 404,
+          message: "Password doesn't match",
+          data: { user: null },
+        };
+      }
+      const token = jwt.sign(
+        {
+          id: getUser.id,
+          userId: getUser.userId,
+          username: getUser.username,
+          credential: getUser.credential,
+        },
+        JWT.SECRET
+      );
+      return {
+        status: true,
+        status_code: 200,
+        message: "Login successfuly",
+        data: { user: getUser, token: token },
+      };
+    } catch (error) {
+      console.log(error);
+      return {
+        status: false,
+        status_code: 500,
+        message: error,
+        data: { user: null },
+      };
+    }
+  }
+  static async updateUser({ userId, username, password }) {
+    try {
+      const getUser = await UserRepositories.findOneUser({ id });
+      if (!getUser) {
+        return {
+          status: false,
+          status_code: 401,
+          message: "Can't find user",
+          data: { user: null },
+        };
+      }
+      const updateUser = await UserRepositories.updateUser({
+        username,
+        password,
+      });
+      return {
+        status: true,
+        status_code: 200,
+        message: "Successfuly updated user",
+        data: { user: updateUser },
+      };
+    } catch (error) {
+      return {
+        status: false,
+        status_code: 500,
+        message: error,
+        data: { user: null },
+      };
+    }
+  }
+  static async deleteUser({ userId }) {
+    try {
+      const getUser = await UserRepositories.findOneUser({ userId });
+      if (!getUser) {
+        return {
+          status: false,
+          status_code: 401,
+          message: "Can't find user to delete",
+          data: { user: null },
+        };
+      }
+      const deletedUser = await UserRepositories.deleteUser();
+      return {
+        status: true,
+        status_code: 200,
+        message: "Successfully deleted user",
+        data: { user: deletedUser },
+      };
+    } catch (error) {
+      return {
+        status: false,
+        status_code: 500,
+        message: error,
+        data: { user: null },
+      };
+    }
   }
   static async listUser() {
     try {
@@ -72,7 +170,7 @@ class UserServices {
       if (getAllUser) {
         return {
           status: true,
-          status_code: 201,
+          status_code: 200,
           message: "Succesfully get all user",
           data: { user: getAllUser },
         };

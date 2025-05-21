@@ -10,6 +10,13 @@ class UserRepositories {
     });
     return createUser;
   }
+  static async login({ username, password }) {
+    const loginUser = await users.create({
+      username,
+      password,
+    });
+    return loginUser;
+  }
   static async existingUsername({ username }) {
     const existingUsername = await users.findOne({
       where: { username: username },
@@ -33,6 +40,10 @@ class UserRepositories {
   static async deleteUser({ userId }) {
     const deleteUser = await users.destroy({ where: { userId: userId } });
     return deleteUser;
+  }
+  static async findOneUser({ id }) {
+    const getUser = await users.findOne({ where: { id: id } });
+    return getUser;
   }
 }
 module.exports = UserRepositories;
