@@ -13,6 +13,7 @@ class DeviceRepositories {
     cameraRootFolder,
     cameraType,
     location,
+    speed,
   }) {
     const addDevice = await device.create({
       deviceId,
@@ -26,6 +27,7 @@ class DeviceRepositories {
       cameraRootFolder,
       cameraType,
       location,
+      speed,
     });
     return addDevice;
   }
@@ -82,6 +84,18 @@ class DeviceRepositories {
   static async findOneDevice({ id }) {
     const getDevice = await device.findOne({ where: { id: id } });
     return getDevice;
+  }
+  static async getTotalRecord() {
+    const getTotalRecord = await device.findAll();
+    return getTotalRecord;
+  }
+  static async getAverageSpeed() {
+    const getAverageSpeed = await device.findAll();
+    return getAverageSpeed;
+  }
+  static async getOverSpeed({ samId }) {
+    const getOverSpeed = await device.findOne({ where: { samId: samId } });
+    return getOverSpeed;
   }
 }
 module.exports = DeviceRepositories;

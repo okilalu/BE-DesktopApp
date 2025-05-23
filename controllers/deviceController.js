@@ -102,10 +102,34 @@ const addDeviceToList = async (req, res) => {
     data,
   });
 };
+
+const getPerformance = async (req, res) => {
+  const { status, status_code, message, data } =
+    await DeviceServices.getPerformance();
+  res.status(status_code).send({
+    status,
+    status_code,
+    message,
+    data,
+  });
+};
+const getOverSpeed = async (req, res) => {
+  const { id } = req.params;
+  const { status, status_code, message, data } =
+    await DeviceServices.getOverSpeed({ id });
+  res.status(status_code).send({
+    status,
+    status_code,
+    message,
+    data,
+  });
+};
 module.exports = {
   addDevice,
   updateDevice,
   deletedDevice,
   getAllDevice,
   addDeviceToList,
+  getPerformance,
+  getOverSpeed,
 };

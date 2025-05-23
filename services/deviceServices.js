@@ -14,6 +14,7 @@ class DeviceServices {
     cameraRootFolder,
     cameraType,
     location,
+    speed,
   }) {
     try {
       if (
@@ -26,7 +27,8 @@ class DeviceServices {
         !cameraPassword ||
         !cameraRootFolder ||
         !cameraType ||
-        !location
+        !location ||
+        !speed
       ) {
         return {
           status: false,
@@ -58,6 +60,7 @@ class DeviceServices {
         cameraRootFolder,
         cameraType,
         location,
+        speed,
       });
       return {
         status: true,
@@ -66,6 +69,7 @@ class DeviceServices {
         data: { device: addDevice },
       };
     } catch (error) {
+      console.log(error);
       return {
         status: false,
         status_code: 500,
@@ -199,6 +203,80 @@ class DeviceServices {
         };
       }
     } catch (error) {
+      return {
+        status: false,
+        status_code: 500,
+        message: error,
+        data: { device: null },
+      };
+    }
+  }
+  static async getPerformance() {
+    try {
+      const getPerformance = await DeviceRepositories.getAllDevice();
+
+      const statsCamera = {};
+
+      getPerformance.forEach(({ samId, speed }) => {
+        if (!statsCamera[samId]) {
+          statsCamera[samId] = {
+            total: 0,
+            speedSum: 0,
+            overSpeedCount: 0,
+          };
+        }
+
+        statsCamera[samId].total += 1;
+        statsCamera[samId].speedSum += speed;
+        if (speed > 60) statsCamera[samId].overSpeedCount += 1;
+      });
+
+      const result = Object.entries(statsCamera).map(([samId, stats]) => ({
+        samId,
+        totalRecord: stats.total,
+        averageSpeed: parseFloat((stats.speedSum / stats.total).toFixed(2)),
+        overSpeed: stats.overSpeedCount,
+      }));
+      return {
+        status: true,
+        status_code: 200,
+        message: "Success get performance data",
+        data: { device: result },
+      };
+    } catch (error) {
+      console.log(error);
+
+      return {
+        status: false,
+        status_code: 500,
+        message: error,
+        data: { device: null },
+      };
+    }
+  }
+  static async getOverSpeed({ id, samId }) {
+    try {
+      const getDevice = await DeviceRepositories.findOneDevice({ id });
+      console.log(getDevice);
+      if (!getDevice) {
+        return {
+          status: false,
+          status_code: 401,
+          message: "Can't get over speed of device",
+          data: { device: null },
+        };
+      }
+      const getOverSpeed = await DeviceRepositories.getOverSpeed({ samId });
+      console.log(getOverSpeed);
+
+      return {
+        status: true,
+        status_code: 200,
+        message: "Successfuly get over speed data of device",
+        data: { device: getOverSpeed },
+      };
+    } catch (error) {
+      console.log(error);
       return {
         status: false,
         status_code: 500,
