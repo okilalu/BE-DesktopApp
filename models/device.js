@@ -9,6 +9,9 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      device.hasMany(models.performance, {
+        foreignKey: "deviceId",
+      });
     }
   }
   device.init(
